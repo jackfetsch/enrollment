@@ -8,12 +8,36 @@ output: html_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 
-library(todyverse)
+library(tidyverse)
 library(readxl)
 library(janitor)
+library(tidycensus)
+census_api_key("9f9584127dd506cdaf80bdb78927e9c01c12f2b8")
 ```
 
 ```{r}
+x <- read_excel("class_enrollment_summary_by_term2.18.20.xlsx", skip = 3) %>%
+  clean_names() %>%
+  filter(! is.na(course_name))
+
+spring_2020 <- read_excel("class_enrollment_summary_by_term2.20.20.xlsx", skip = 3) %>%
+  clean_names() %>%
+  filter(! is.na(course_name))
+
+spring_2019 <- read_excel("class_enrollment_summary_by_term3.22.19_0.xlsx", skip = 3) %>%
+  clean_names() %>%
+  filter(! is.na(course_name))
+
+
+
+y <- x %>%
+  group_by(course_department) %>%
+  mutate(dept_sum = sum(u_grad))
+
+z <- x %>%
+  group_by(course_department) %>%
+  summarize(total = sum(total)) %>%
+  arrange(desc(total))
 
 ```
 
